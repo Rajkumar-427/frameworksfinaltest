@@ -1,0 +1,38 @@
+package com.raj.springBoot.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.raj.springBoot.model.Product;
+
+@RestController
+@RequestMapping("/api/Categories")
+public class Productcontroller {
+
+	@Autowired
+	private ProductRepository productRepository;
+	@GetMapping
+	public Page<Product> getAllProducts(Pageable pageable){
+		return ProductRepository.findAll(pageable);
+	}
+	@PostMapping
+	public Product createProduct(@RequestBody Product product) {
+		return productRepository.save(product);
+	}
+	@GetMapping("/{id}")
+	public ProductById(@PathVariable("id") Long id) {
+		return productRepository.findById(id).orElseThrow(() -> 
+		new NotFoundException("Product not found"));
+	}
+	@PutMapping("/{id}")
+	public Product updateProduct(@PathVariable("id") Longid,@RequestBody Product updatedProduct) {
+		Product product = productRepository.findById(id).orElseThrow(()-> 
+		new NotFoundException("Product not found"));
+		product.setName(updateProduct.getName());
+		return productRepository.save(product);
+	}
+}
